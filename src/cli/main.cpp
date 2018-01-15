@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 #include <QCommandLineParser>
 #include <QCoreApplication>
@@ -76,9 +77,12 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  std::stringstream output_buff;
+  std::ostream * output_s = &std::cout;
+
   Huffman::Codec codec;
   codec.input = &std::cin;
-  codec.output = &std::cout;
+  codec.output = &output_buff;
 
   std::ifstream input_file;
   if (input) {
@@ -104,7 +108,7 @@ int main(int argc, char *argv[]) {
                          .arg(parser.value("output"));
       return -1;
     }
-    codec.output = &output_file;
+    output_s = &output_file;
   }
 
   std::unique_ptr<Huffman::Corpus> corpus;
@@ -172,6 +176,8 @@ int main(int argc, char *argv[]) {
 
   if (extract)
     codec.uncompress(corpus->tree());
+
+  *output_s << output_buff.rdbuf();
 
   return 0;
 }
