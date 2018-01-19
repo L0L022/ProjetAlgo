@@ -17,7 +17,7 @@ void Codec::compress(const CharactersCode &cc) {
   for (char c = input->get(); input->good() && output->good();
        c = input->get()) {
     for (bool b : cc.at(c)) {
-        bits[bits.size() - 1 - i] = b;
+      bits[bits.size() - 1 - i] = b;
       if (i == bits.size() - 1) {
         output->put(bits.to_ulong());
         bits.reset();
@@ -33,7 +33,7 @@ void Codec::compress(const CharactersCode &cc) {
     output->seekp(begin);
     bits.reset();
     for (size_t j = 0; j < i; ++j)
-        bits[bits.size() - 1 - j] = true;
+      bits[bits.size() - 1 - j] = true;
     output->put(bits.to_ulong());
     output->seekp(0, std::ios_base::end);
   }
@@ -50,23 +50,23 @@ void Codec::uncompress(const Tree &t) {
   bool is_eof = input->eof();
   size_t bits_size = bits.size();
   while (!is_eof) {
-      is_eof = input->eof();
+    is_eof = input->eof();
 
-      if (is_eof and ignore_bits.any()){
-          bits &= ignore_bits;
-          bits_size = ignore_bits.count();
-        }
+    if (is_eof and ignore_bits.any()) {
+      bits &= ignore_bits;
+      bits_size = ignore_bits.count();
+    }
 
-      for (size_t i = 0; i < bits_size; ++i) {
-        it += bits[bits.size() - 1 - i];
-        if (it->isLeaf()) {
-          output->put(it->character());
-          it = t.root();
-        }
+    for (size_t i = 0; i < bits_size; ++i) {
+      it += bits[bits.size() - 1 - i];
+      if (it->isLeaf()) {
+        output->put(it->character());
+        it = t.root();
       }
+    }
 
-      bits = next_c;
-      next_c = input->get();
+    bits = next_c;
+    next_c = input->get();
   }
 
   // check if streams are still ok

@@ -48,9 +48,10 @@ int main(int argc, char *argv[]) {
       {"save_corpus",
        QCoreApplication::translate("main", "Save corpus to <file>."),
        QCoreApplication::translate("main", "file")},
-        {"save_tree",
-         QCoreApplication::translate("main", "Write a Graphviz dot file of the huffman tree to <file>."),
-         QCoreApplication::translate("main", "file")},
+      {"save_tree",
+       QCoreApplication::translate(
+           "main", "Write a Graphviz dot file of the huffman tree to <file>."),
+       QCoreApplication::translate("main", "file")},
   });
 
   parser.process(app);
@@ -63,7 +64,6 @@ int main(int argc, char *argv[]) {
   bool load_corpus = parser.isSet("load_corpus");
   bool save_corpus = parser.isSet("save_corpus");
   bool save_tree = parser.isSet("save_tree");
-
 
   if (compress and extract) {
     qCritical() << QCoreApplication::translate(
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
   }
 
   std::stringstream output_buff;
-  std::ostream * output_s = &std::cout;
+  std::ostream *output_s = &std::cout;
 
   Huffman::Codec codec;
   codec.input = &std::cin;
@@ -160,15 +160,15 @@ int main(int argc, char *argv[]) {
   }
 
   if (save_tree) {
-      std::ofstream file(parser.value("save_tree").toStdString(),
-                         std::ios::binary | std::ios::out);
-      if (!file.is_open()) {
-        qCritical() << QCoreApplication::translate(
-                           "main", "Can't open %1 file for writing.")
-                           .arg(parser.value("save_tree"));
-        return -1;
-      }
-      Cli::Graphic::makeDOT(corpus->tree(), file);
+    std::ofstream file(parser.value("save_tree").toStdString(),
+                       std::ios::binary | std::ios::out);
+    if (!file.is_open()) {
+      qCritical() << QCoreApplication::translate(
+                         "main", "Can't open %1 file for writing.")
+                         .arg(parser.value("save_tree"));
+      return -1;
+    }
+    Cli::Graphic::makeDOT(corpus->tree(), file);
   }
 
   if (compress)
